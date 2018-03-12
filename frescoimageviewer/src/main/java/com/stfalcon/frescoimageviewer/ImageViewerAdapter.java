@@ -145,12 +145,12 @@ class ImageViewerAdapter
 
         private void setController(String url, String urlLowRes) {
             PipelineDraweeControllerBuilder controllerBuilder = Fresco.newDraweeControllerBuilder();
+            controllerBuilder.setLowResImageRequest(ImageRequest.fromUri(Uri.parse(urlLowRes)));
             controllerBuilder.setUri(url);
             controllerBuilder.setOldController(drawee.getController());
             controllerBuilder.setControllerListener(getDraweeControllerListener(drawee));
             if (imageRequestBuilder != null) {
                 imageRequestBuilder.setSource(Uri.parse(url));
-                controllerBuilder.setLowResImageRequest(ImageRequest.fromUri(Uri.parse(urlLowRes)));
                 controllerBuilder.setImageRequest(imageRequestBuilder.build());
             }
             drawee.setController(controllerBuilder.build());
