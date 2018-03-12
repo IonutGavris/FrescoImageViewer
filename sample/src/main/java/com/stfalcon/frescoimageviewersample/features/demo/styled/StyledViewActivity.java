@@ -49,7 +49,7 @@ public class StyledViewActivity extends DemoActivity {
 
     @Override
     protected void showPicker(int startPosition) {
-        ImageViewer.Builder builder = new ImageViewer.Builder<>(this, posters)
+        ImageViewer.Builder builder = new ImageViewer.Builder<>(this, posters, null)
                 .setStartPosition(startPosition)
                 .setOnDismissListener(getDismissListener());
 

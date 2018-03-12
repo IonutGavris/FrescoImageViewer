@@ -31,7 +31,7 @@ public class CustomObjectsActivity extends DemoActivity {
     @Override
     protected void showPicker(int startPosition) {
         overlayView = new ImageOverlayView(this);
-        new ImageViewer.Builder<>(this, images)
+        new ImageViewer.Builder<>(this, images, null)
                 .setFormatter(getCustomFormatter())
                 .setImageChangeListener(getImageChangeListener())
                 .setOverlayView(overlayView)

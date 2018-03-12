@@ -19,7 +19,7 @@ public class SimpleUsageActivity extends DemoActivity {
 
     @Override
     protected void showPicker(int startPosition) {
-        new ImageViewer.Builder<>(this, posters)
+        new ImageViewer.Builder<>(this, posters, null)
                 .setStartPosition(startPosition)
                 .show();
     }

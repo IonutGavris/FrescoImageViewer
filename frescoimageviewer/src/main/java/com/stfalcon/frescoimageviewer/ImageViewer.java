@@ -79,7 +79,7 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
         viewer.setOverlayView(builder.overlayView);
         viewer.setImageMargin(builder.imageMarginPixels);
         viewer.setContainerPadding(builder.containerPaddingPixels);
-        viewer.setUrls(builder.dataSet, builder.startPosition);
+        viewer.setUrls(builder.dataSet, builder.dataSetLowRes, builder.startPosition);
         viewer.setPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -199,6 +199,7 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
 
         private Context context;
         private DataSet<T> dataSet;
+        private DataSet<T> dataSetLowRes;
         private @ColorInt int backgroundColor = Color.BLACK;
         private int startPosition;
         private OnImageChangeListener imageChangeListener;
@@ -215,16 +216,17 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
         /**
          * Constructor using a context and images urls array for this builder and the {@link ImageViewer} it creates.
          */
-        public Builder(Context context, T[] images) {
-            this(context, new ArrayList<>(Arrays.asList(images)));
+        public Builder(Context context, T[] images, T[] imagesLowRes) {
+            this(context, new ArrayList<>(Arrays.asList(images)), new ArrayList<>(Arrays.asList(imagesLowRes)));
         }
 
         /**
          * Constructor using a context and images urls list for this builder and the {@link ImageViewer} it creates.
          */
-        public Builder(Context context, List<T> images) {
+        public Builder(Context context, List<T> images, List<T> imagesLowRes) {
             this.context = context;
             this.dataSet = new DataSet<>(images);
+            this.dataSetLowRes = new DataSet<>(imagesLowRes);
         }
 
         /**
@@ -232,6 +234,7 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
          */
         public Builder setFormatter(Formatter<T> formatter) {
             this.dataSet.formatter = formatter;
+            this.dataSetLowRes.formatter = formatter;
             return this;
         }
 

@@ -12,6 +12,7 @@ import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.stfalcon.frescoimageviewer.adapter.RecyclingPagerAdapter;
 import com.stfalcon.frescoimageviewer.adapter.ViewHolder;
@@ -29,17 +30,19 @@ class ImageViewerAdapter
 
     private Context context;
     private ImageViewer.DataSet<?> dataSet;
+    private ImageViewer.DataSet<?> dataSetLowRes;
     private HashSet<ImageViewHolder> holders;
     private ImageRequestBuilder imageRequestBuilder;
     private GenericDraweeHierarchyBuilder hierarchyBuilder;
     private boolean isZoomingAllowed;
 
-    ImageViewerAdapter(Context context, ImageViewer.DataSet<?> dataSet,
+    ImageViewerAdapter(Context context, ImageViewer.DataSet<?> dataSet, ImageViewer.DataSet<?> dataSetLowRes,
                        ImageRequestBuilder imageRequestBuilder,
                        GenericDraweeHierarchyBuilder hierarchyBuilder,
                        boolean isZoomingAllowed) {
         this.context = context;
         this.dataSet = dataSet;
+        this.dataSetLowRes = dataSetLowRes;
         this.holders = new HashSet<>();
         this.imageRequestBuilder = imageRequestBuilder;
         this.hierarchyBuilder = hierarchyBuilder;
@@ -119,7 +122,7 @@ class ImageViewerAdapter
             this.position = position;
 
             tryToSetHierarchy();
-            setController(dataSet.format(position));
+            setController(dataSet.format(position), dataSetLowRes.format(position));
 
             drawee.setOnScaleChangeListener(this);
         }
@@ -140,13 +143,14 @@ class ImageViewerAdapter
             }
         }
 
-        private void setController(String url) {
+        private void setController(String url, String urlLowRes) {
             PipelineDraweeControllerBuilder controllerBuilder = Fresco.newDraweeControllerBuilder();
             controllerBuilder.setUri(url);
             controllerBuilder.setOldController(drawee.getController());
             controllerBuilder.setControllerListener(getDraweeControllerListener(drawee));
             if (imageRequestBuilder != null) {
                 imageRequestBuilder.setSource(Uri.parse(url));
+                controllerBuilder.setLowResImageRequest(ImageRequest.fromUri(Uri.parse(urlLowRes)));
                 controllerBuilder.setImageRequest(imageRequestBuilder.build());
             }
             drawee.setController(controllerBuilder.build());

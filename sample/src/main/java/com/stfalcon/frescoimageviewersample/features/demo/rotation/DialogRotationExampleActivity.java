@@ -49,7 +49,7 @@ public class DialogRotationExampleActivity extends DemoActivity {
         isDialogShown = true;
         currentPosition = startPosition;
 
-        new ImageViewer.Builder<>(this, Demo.getPosters())
+        new ImageViewer.Builder<>(this, Demo.getPosters(), null)
                 .setStartPosition(startPosition)
                 .setImageChangeListener(getImageChangeListener())
                 .setOnDismissListener(getDismissListener())
