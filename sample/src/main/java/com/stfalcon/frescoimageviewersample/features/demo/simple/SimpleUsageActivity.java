@@ -21,6 +21,6 @@ public class SimpleUsageActivity extends DemoActivity {
     protected void showPicker(int startPosition) {
         new ImageViewer.Builder<>(posters, posters)
                 .setStartPosition(startPosition)
-                .show(getFragmentManager());
+                .show(getSupportFragmentManager());
     }
 }

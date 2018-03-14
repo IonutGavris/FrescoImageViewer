@@ -87,7 +87,7 @@ public class StyledViewActivity extends DemoActivity {
                             .setPostprocessor(new GrayscalePostprocessor()));
         }
 
-        builder.show(getFragmentManager());
+        builder.show(getSupportFragmentManager());
     }
 
     private ImageViewer.OnImageChangeListener getImageChangeListener() {

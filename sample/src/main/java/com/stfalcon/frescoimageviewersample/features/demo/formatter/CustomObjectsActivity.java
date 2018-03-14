@@ -35,7 +35,7 @@ public class CustomObjectsActivity extends DemoActivity {
                 .setFormatter(getCustomFormatter())
                 .setImageChangeListener(getImageChangeListener())
                 .setOverlayView(overlayView)
-                .show(getFragmentManager());
+                .show(getSupportFragmentManager());
     }
 
     private ImageViewer.Formatter<CustomImage> getCustomFormatter() {

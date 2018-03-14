@@ -53,7 +53,7 @@ public class DialogRotationExampleActivity extends DemoActivity {
                 .setStartPosition(startPosition)
                 .setImageChangeListener(getImageChangeListener())
                 .setOnDismissListener(getDismissListener())
-                .show(getFragmentManager());
+                .show(getSupportFragmentManager());
     }
 
     private ImageViewer.OnImageChangeListener getImageChangeListener() {
