@@ -11,7 +11,6 @@
 
         <activity
             android:name=".features.main.MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -21,19 +20,16 @@
 
         <activity
             android:name=".features.demo.simple.SimpleUsageActivity"
-            android:label="@string/action_simple_usage"
-            android:screenOrientation="portrait"/>
+            android:label="@string/action_simple_usage" />
         <activity
             android:name=".features.demo.styled.StyledViewActivity"
-            android:label="@string/action_styled_view"
-            android:screenOrientation="portrait"/>
+            android:label="@string/action_styled_view" />
         <activity
             android:name=".features.demo.rotation.DialogRotationExampleActivity"
-            android:label="@string/action_rotation_support"/>
+            android:label="@string/action_rotation_support" />
         <activity
             android:name=".features.demo.formatter.CustomObjectsActivity"
-            android:label="@string/action_custom_objects"
-            android:screenOrientation="portrait"/>
+            android:label="@string/action_custom_objects" />
     </application>
 
 </manifest>

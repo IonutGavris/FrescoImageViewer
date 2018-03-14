@@ -31,11 +31,11 @@ public class CustomObjectsActivity extends DemoActivity {
     @Override
     protected void showPicker(int startPosition) {
         overlayView = new ImageOverlayView(this);
-        new ImageViewer.Builder<>(this, images, null)
+        new ImageViewer.Builder<>(images, null)
                 .setFormatter(getCustomFormatter())
                 .setImageChangeListener(getImageChangeListener())
                 .setOverlayView(overlayView)
-                .show();
+                .show(getFragmentManager());
     }
 
     private ImageViewer.Formatter<CustomImage> getCustomFormatter() {

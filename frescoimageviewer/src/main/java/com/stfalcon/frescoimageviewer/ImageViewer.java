@@ -16,10 +16,14 @@
 
 package com.stfalcon.frescoimageviewer;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
@@ -33,6 +37,7 @@ import android.view.View;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,25 +45,19 @@ import java.util.List;
 /*
  * Created by Alexander Krol (troy379) on 29.08.16.
  */
-public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyListener {
+public class ImageViewer extends DialogFragment implements OnDismissListener, DialogInterface.OnKeyListener {
 
     private static final String TAG = ImageViewer.class.getSimpleName();
 
     private Builder builder;
-    private AlertDialog dialog;
     private ImageViewerView viewer;
-
-    protected ImageViewer(Builder builder) {
-        this.builder = builder;
-        createDialog();
-    }
 
     /**
      * Displays the built viewer if passed images list isn't empty
      */
-    public void show() {
+    public void show(FragmentManager fragmentManager, Builder builder) {
         if (!builder.dataSet.data.isEmpty()) {
-            dialog.show();
+            show(fragmentManager, "dialog");
         } else {
             Log.w(TAG, "Images list cannot be empty! Viewer ignored.");
         }
@@ -68,8 +67,14 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
         return viewer.getUrl();
     }
 
-    private void createDialog() {
-        viewer = new ImageViewerView(builder.context);
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        builder = (Builder) getArguments().getSerializable("data");
+        return createDialog(getActivity());
+    }
+
+    private Dialog createDialog(Context context) {
+        viewer = new ImageViewerView(context);
         viewer.setCustomImageRequestBuilder(builder.customImageRequestBuilder);
         viewer.setCustomDraweeHierarchyBuilder(builder.customHierarchyBuilder);
         viewer.allowZooming(builder.isZoomingAllowed);
@@ -89,18 +94,10 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
             }
         });
 
-        dialog = new AlertDialog.Builder(builder.context, getDialogStyle())
+        return new AlertDialog.Builder(context, getDialogStyle())
                 .setView(viewer)
                 .setOnKeyListener(this)
                 .create();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if (builder.onDismissListener != null) {
-                    builder.onDismissListener.onDismiss();
-                }
-            }
-        });
     }
 
     /**
@@ -108,7 +105,15 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
      */
     @Override
     public void onDismiss() {
-        dialog.dismiss();
+        dismiss();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (builder.onDismissListener != null) {
+            builder.onDismissListener.onDismiss();
+        }
     }
 
     /**
@@ -195,9 +200,8 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
     /**
      * Builder class for {@link ImageViewer}
      */
-    public static class Builder<T> {
+    public static class Builder<T> implements Serializable {
 
-        private Context context;
         private DataSet<T> dataSet;
         private DataSet<T> dataSetLowRes;
         private @ColorInt int backgroundColor = Color.BLACK;
@@ -216,15 +220,14 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
         /**
          * Constructor using a context and images urls array for this builder and the {@link ImageViewer} it creates.
          */
-        public Builder(Context context, T[] images, T[] imagesLowRes) {
-            this(context, new ArrayList<>(Arrays.asList(images)), new ArrayList<>(Arrays.asList(imagesLowRes)));
+        public Builder(T[] images, T[] imagesLowRes) {
+            this(new ArrayList<>(Arrays.asList(images)), new ArrayList<>(Arrays.asList(imagesLowRes)));
         }
 
         /**
          * Constructor using a context and images urls list for this builder and the {@link ImageViewer} it creates.
          */
-        public Builder(Context context, List<T> images, List<T> imagesLowRes) {
-            this.context = context;
+        public Builder(List<T> images, List<T> imagesLowRes) {
             this.dataSet = new DataSet<>(images);
             this.dataSetLowRes = new DataSet<>(imagesLowRes);
         }
@@ -244,7 +247,7 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
          * @return This Builder object to allow for chaining of calls to set methods
          */
         @SuppressWarnings("deprecation")
-        public Builder setBackgroundColorRes(@ColorRes int color) {
+        public Builder setBackgroundColorRes(Context context, @ColorRes int color) {
             return this.setBackgroundColor(context.getResources().getColor(color));
         }
 
@@ -421,21 +424,25 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
 
         /**
          * Creates a {@link ImageViewer} with the arguments supplied to this builder. It does not
-         * {@link ImageViewer#show()} the dialog. This allows the user to do any extra processing
-         * before displaying the dialog. Use {@link #show()} if you don't have any other processing
+         * {@link ImageViewer#show(FragmentManager fragmentManager)} the dialog. This allows the user to do any extra processing
+         * before displaying the dialog. Use {@link #show(FragmentManager fragmentManager)} if you don't have any other processing
          * to do and want this to be created and displayed.
          */
         public ImageViewer build() {
-            return new ImageViewer(this);
+            ImageViewer imageViewer = new ImageViewer();
+            Bundle args = new Bundle();
+            args.putSerializable("data", this);
+            imageViewer.setArguments(args);
+            return imageViewer;
         }
 
         /**
          * Creates a {@link ImageViewer} with the arguments supplied to this builder and
-         * {@link ImageViewer#show()}'s the dialog.
+         * {@link ImageViewer#show(FragmentManager fragmentManager, Builder builder)}'s the dialog.
          */
-        public ImageViewer show() {
+        public ImageViewer show(FragmentManager fragmentManager) {
             ImageViewer dialog = build();
-            dialog.show();
+            dialog.show(fragmentManager, this);
             return dialog;
         }
     }
