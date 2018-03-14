@@ -52,6 +52,9 @@ public class ImageViewer extends DialogFragment implements OnDismissListener, Di
     private Builder builder;
     private ImageViewerView viewer;
 
+    public ImageViewer() {
+    }
+
     /**
      * Displays the built viewer if passed images list isn't empty
      */
@@ -424,8 +427,9 @@ public class ImageViewer extends DialogFragment implements OnDismissListener, Di
 
         /**
          * Creates a {@link ImageViewer} with the arguments supplied to this builder. It does not
-         * {@link ImageViewer#show(FragmentManager fragmentManager)} the dialog. This allows the user to do any extra processing
-         * before displaying the dialog. Use {@link #show(FragmentManager fragmentManager)} if you don't have any other processing
+         * {@link ImageViewer#show(FragmentManager fragmentManager, Builder builder)} the dialog. This allows the
+         * user to do any extra processing before displaying the dialog.
+         * Use {@link #show(FragmentManager fragmentManager)} if you don't have any other processing
          * to do and want this to be created and displayed.
          */
         public ImageViewer build() {
