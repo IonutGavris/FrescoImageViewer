@@ -177,7 +177,7 @@ public class ImageViewer extends DialogFragment implements OnDismissListener, Di
         String format(T t);
     }
 
-    static class DataSet<T> {
+    static class DataSet<T> implements Serializable {
 
         private List<T> data;
         private Formatter<T> formatter;
@@ -211,11 +211,11 @@ public class ImageViewer extends DialogFragment implements OnDismissListener, Di
         private int startPosition;
         private OnImageChangeListener imageChangeListener;
         private OnDismissListener onDismissListener;
-        private View overlayView;
+        private transient View overlayView;
         private int imageMarginPixels;
         private int[] containerPaddingPixels = new int[4];
-        private ImageRequestBuilder customImageRequestBuilder;
-        private GenericDraweeHierarchyBuilder customHierarchyBuilder;
+        private transient ImageRequestBuilder customImageRequestBuilder;
+        private transient GenericDraweeHierarchyBuilder customHierarchyBuilder;
         private boolean shouldStatusBarHide = true;
         private boolean isZoomingAllowed = true;
         private boolean isSwipeToDismissAllowed = true;
